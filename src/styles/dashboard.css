@@ -1,0 +1,235 @@
+/* ===== E-Campus Dashboard Styles ===== */
+
+/* Layout */
+.ant-layout {
+  background: transparent !important;
+}
+
+.ant-layout-header {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  z-index: 1000;
+}
+
+.ant-layout-sider {
+  box-shadow: none !important;
+  border-right: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+/* Cards */
+.ant-card {
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.ant-card:hover {
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid #f1f5f9;
+  border-radius: 16px 16px 0 0 !important;
+  padding: 16px 24px;
+}
+
+/* Tables */
+.ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th,
+.ant-table-thead > tr > td {
+  background: #f8fafc !important;
+  font-weight: 600;
+  color: #475569;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.ant-table-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f8fafc !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 14px 16px;
+}
+
+/* Statistics */
+.ant-statistic-title {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.ant-statistic-content {
+  font-weight: 700;
+}
+
+.ant-statistic-content-value {
+  font-size: 28px !important;
+}
+
+/* Buttons */
+.ant-btn {
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
+
+.ant-btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Modal */
+.ant-modal-content {
+  border-radius: 20px !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.ant-modal-header {
+  border-radius: 20px 20px 0 0 !important;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.ant-modal-title {
+  font-weight: 700 !important;
+  font-size: 18px !important;
+}
+
+.ant-modal-body {
+  padding: 24px;
+}
+
+/* Forms */
+.ant-form-item-label > label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.ant-input,
+.ant-input-password,
+.ant-select-selector {
+  border-radius: 10px !important;
+  border-color: #e2e8f0 !important;
+  transition: all 0.25s ease;
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-password:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+
+.ant-input:hover,
+.ant-select-selector:hover {
+  border-color: #a5b4fc !important;
+}
+
+/* Tags */
+.ant-tag {
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 10px;
+  border: none;
+}
+
+/* Menu sidebar */
+.ant-menu {
+  border: none !important;
+}
+
+.ant-menu-item {
+  border-radius: 10px !important;
+  margin: 4px 12px !important;
+  padding-left: 16px !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.ant-menu-item:hover {
+  background: #eef2ff !important;
+  color: #4f46e5 !important;
+}
+
+.ant-menu-item-selected {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.ant-menu-item-selected .anticon {
+  color: white !important;
+}
+
+/* Dropdown */
+.ant-dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+  padding: 6px !important;
+  border: 1px solid #f1f5f9;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  transition: all 0.15s ease;
+}
+
+/* Alert */
+.ant-alert {
+  border-radius: 12px !important;
+  border: none !important;
+}
+
+/* Badge */
+.ant-badge-dot {
+  box-shadow: 0 0 0 2px white;
+}
+
+/* Popconfirm */
+.ant-popconfirm {
+  border-radius: 12px;
+}
+
+/* Divider */
+.ant-divider-inner-text {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ant-statistic {
+    text-align: center;
+  }
+  
+  .ant-card {
+    margin-bottom: 12px;
+  }
+
+  .ant-modal-content {
+    border-radius: 16px !important;
+  }
+}
