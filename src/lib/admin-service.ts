@@ -141,7 +141,10 @@ export const adminService = {
 
   // Create new user
   async createUser(userData: CreateUserData): Promise<UserWithRole> {
-    const response = await authClient.admin.createUser(userData)
+    const response = await authClient.admin.createUser({
+      ...userData,
+      role: userData.role as unknown as ("user" | "admin")[],
+    })
     
     if (response.error) {
       throw new Error(response.error.message)
@@ -159,7 +162,10 @@ export const adminService = {
   async updateUser(id: string, userData: UpdateUserData): Promise<UserWithRole> {
     const response = await authClient.admin.updateUser({
       userId: id,
-      data: userData,
+      data: {
+        ...userData,
+        role: userData.role as unknown as ("user" | "admin")[] | undefined,
+      },
     })
     
     if (response.error) {
@@ -212,7 +218,7 @@ export const adminService = {
   async setUserRole(id: string, role: RoleName[]): Promise<void> {
     const response = await authClient.admin.setRole({
       userId: id,
-      role,
+      role: role as unknown as ("user" | "admin")[],
     })
     
     if (response.error) {

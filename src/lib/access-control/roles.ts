@@ -36,7 +36,12 @@ export const ac = createAccessControl(statement);
  */
 
 // Rôle USER - Compte générique authentifié sans permission métier.
-export const user = ac.newRole({});
+// Note: `rapport: ['read']` est requis pour éviter que le type générique de `authorize`
+// ne collapse vers `never` (Better Auth / TypeScript). La lecture des rapports est
+// la permission minimale accordée à tout utilisateur authentifié.
+export const user = ac.newRole({
+  rapport: ['read'],
+});
 
 // Rôle SUPERADMIN - Accès complet à toutes les ressources
 export const superadmin = ac.newRole({

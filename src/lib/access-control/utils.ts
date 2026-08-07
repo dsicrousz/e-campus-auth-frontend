@@ -27,7 +27,7 @@ export function isChefRole(role: RoleName): boolean {
  */
 export function getRoleResources(role: RoleName): Resource[] {
   const resourceMap: Record<RoleName, Resource[]> = {
-    user: [],
+    user: ['rapport'],
     superadmin: [
       'user',
       'session',
