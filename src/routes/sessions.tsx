@@ -104,7 +104,7 @@ function SessionManagement() {
       dataIndex: 'id',
       key: 'id',
       render: (id: string) => (
-        <span className="font-mono text-xs bg-slate-50 px-2 py-1 rounded-lg text-slate-600">
+        <span className="font-mono text-xs bg-slate-50 px-2 py-1 rounded-md text-slate-600 border border-slate-200">
           {id.substring(0, 8)}...
         </span>
       ),
@@ -118,7 +118,7 @@ function SessionManagement() {
         const icon = device === 'Mobile' ? <MobileOutlined /> : <DesktopOutlined />
         return (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-700">
               {icon}
             </div>
             <Text className="font-medium">{device}</Text>
@@ -157,7 +157,7 @@ function SessionManagement() {
         return (
           <div className="flex items-center gap-2">
             <Badge status={isExpired ? 'error' : 'success'} />
-            <Text className={`text-sm ${isExpired ? 'text-red-500' : 'text-slate-600'}`}>{formatDate(date)}</Text>
+            <Text className={`text-sm ${isExpired ? 'text-red-600' : 'text-slate-600'}`}>{formatDate(date)}</Text>
           </div>
         )
       },
@@ -168,9 +168,9 @@ function SessionManagement() {
       render: (_: any, record: UserSession) => {
         const isExpired = new Date(record.expiresAt) < new Date()
         return (
-          <Tag 
+          <Tag
             color={isExpired ? 'red' : 'green'}
-            className="!rounded-lg !font-semibold !px-3"
+            className="!rounded-md !font-semibold !px-3"
           >
             {isExpired ? 'Expirée' : 'Active'}
           </Tag>
@@ -187,9 +187,9 @@ function SessionManagement() {
           okText="Oui"
           cancelText="Non"
         >
-          <Button 
-            type="text" 
-            danger 
+          <Button
+            type="text"
+            danger
             icon={<CloseCircleOutlined />}
             className="!rounded-lg hover:!bg-red-50"
           >
@@ -205,18 +205,18 @@ function SessionManagement() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <Title level={2} className="!mb-1 gradient-text !font-bold">
+          <Title level={2} className="!mb-1 gradient-text !font-bold" style={{ fontFamily: 'Lexend, sans-serif' }}>
             Gestion des Sessions
           </Title>
-          <Text className="text-slate-500">
+          <Text className="text-slate-600">
             Visualisez et gérez les sessions actives des utilisateurs
           </Text>
         </div>
       </div>
-      
+
       {/* User Selection */}
-      <div className="bg-white rounded-2xl border border-slate-100 p-6">
-        <Text className="!font-bold !text-sm !text-slate-700 !uppercase !tracking-wide block mb-4">
+      <div className="surface-card p-6">
+        <Text className="!font-bold !text-sm !text-slate-700 !uppercase !tracking-wide block mb-4" style={{ fontFamily: 'Lexend, sans-serif' }}>
           Sélectionner un utilisateur
         </Text>
         <div className="flex flex-wrap items-center gap-3">
@@ -227,7 +227,7 @@ function SessionManagement() {
             onChange={handleUserSelect}
             value={selectedUserId}
             loading={usersLoading}
-            className="!rounded-xl"
+            className="!rounded-lg"
             showSearch
             optionFilterProp="children"
           >
@@ -244,11 +244,11 @@ function SessionManagement() {
               okText="Oui"
               cancelText="Non"
             >
-              <Button 
-                danger 
+              <Button
+                danger
                 icon={<SafetyOutlined />}
                 size="large"
-                className="!rounded-xl !font-semibold"
+                className="!rounded-lg !font-semibold focus-ring"
               >
                 Révoquer toutes les sessions
               </Button>
@@ -259,15 +259,17 @@ function SessionManagement() {
 
       {/* Sessions Table */}
       {selectedUserId && (
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className="px-6 py-5 border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center primary-bg">
                 <SafetyOutlined className="text-white" />
               </div>
               <div>
-                <Text className="!font-bold !text-lg !text-slate-800 block">Sessions actives</Text>
-                <Text className="text-slate-400 text-sm">{sessions?.length || 0} session(s) trouvée(s)</Text>
+                <Text className="!font-bold !text-lg !text-slate-800 block" style={{ fontFamily: 'Lexend, sans-serif' }}>
+                  Sessions actives
+                </Text>
+                <Text className="text-slate-500 text-sm">{sessions?.length || 0} session(s) trouvée(s)</Text>
               </div>
             </div>
           </div>
@@ -276,7 +278,7 @@ function SessionManagement() {
             dataSource={sessions || []}
             loading={sessionsLoading}
             rowKey="id"
-            pagination={{ 
+            pagination={{
               pageSize: 10,
               showSizeChanger: true,
               showTotal: (total) => `Total: ${total} sessions`
@@ -291,15 +293,15 @@ function SessionManagement() {
 
       {/* Empty State */}
       {!selectedUserId && (
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className="text-center py-20 px-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6" style={{ background: 'linear-gradient(135deg, #eef2ff, #ede9fe)' }}>
-              <DesktopOutlined className="text-3xl text-indigo-400" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl mb-6 tint-bg">
+              <DesktopOutlined className="text-3xl text-blue-700" />
             </div>
-            <Title level={3} className="!mb-2 !text-slate-800">
+            <Title level={3} className="!mb-2 !text-slate-800" style={{ fontFamily: 'Lexend, sans-serif' }}>
               Sélectionnez un utilisateur
             </Title>
-            <Text className="text-slate-400 text-base max-w-md mx-auto block">
+            <Text className="text-slate-500 text-base max-w-md mx-auto block">
               Choisissez un utilisateur dans la liste ci-dessus pour afficher et gérer ses sessions actives
             </Text>
           </div>

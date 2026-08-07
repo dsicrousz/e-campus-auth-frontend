@@ -78,7 +78,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const isAdmin = Boolean(user?.role === 'superadmin' || (Array.isArray(user?.role) && user?.role.includes('superadmin')))
+  const isAdmin = Boolean(
+    user?.role === 'superadmin' ||
+    user?.role === 'admin' ||
+    (Array.isArray(user?.role) && (user?.role.includes('superadmin') || user?.role.includes('admin')))
+  )
 
   return (
     <AuthContext.Provider value={{

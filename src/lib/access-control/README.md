@@ -2,82 +2,73 @@
 
 Ce système est basé sur le plugin **Better Auth Admin** avec des rôles et permissions personnalisés.
 
-## 📋 Rôles Disponibles
+Domaine : digitalisation du processus de ventes et consommation des tickets de restauration universitaire (CROUS).
+
+## 📋 Rôles Disponibles (11)
 
 ### 1. **USER** (Utilisateur Standard)
-- Accès en lecture seule aux ventes et rapports
-- Permissions : `vente:read`, `rapport:read`
+- Compte générique authentifié, aucune permission métier
 
-### 2. **SUPERADMIN** (Super Administrateur)
-- Accès complet à toutes les ressources
-- Gestion complète des utilisateurs et sessions
-- Toutes les permissions sur toutes les ressources
+### 2. **VENDEUR**
+- Vente de tickets de restauration
+- Permissions : `ticket:create`, `ticket:read`, `ticket:update`, `ticket:list`
 
-### 3. **ADMIN** (Administrateur)
-- Gestion des utilisateurs (création, bannissement, attribution de rôles)
-- Accès en lecture à toutes les ressources
-- Génération et export de rapports
+### 3. **RECOUVREUR**
+- Recouvrement des créances
+- Permissions : `recouvrement:CRUD+validate`, `rapport:read,generate`
 
-### 4. **VENDEUR**
-- Création et gestion des ventes
-- Permissions : `vente:create`, `vente:read`, `vente:update`, `vente:list`
+### 4. **CAISSIER_PRINCIPAL**
+- Gestion de la caisse physique
+- Permissions : `caisse:open,close,read,reconcile,list`, `ticket:read,list`
 
-### 5. **CAISSIER**
-- Gestion de la caisse (ouverture, fermeture, réconciliation)
-- Lecture des ventes
-- Génération de rapports de caisse
+### 5. **REPRENEUR**
+- Restaurants assignés : produire les factures
+- Permissions : `reprise:read,list,generate,export`, `ticket:read,list`, `restauration:read,list`
 
-### 6. **ACP** (Agent Commercial Principal)
-- Gestion et validation des ventes
-- Consultation de la caisse
-- Génération et export de rapports
+### 6. **ACP** (Agent Comptable Principal)
+- Page comptabilité
+- Permissions : `comptabilite:read,export,reconcile,list,validate`, `caisse:read,reconcile`, `ticket:read,list,validate`
 
 ### 7. **CONTROLEUR**
-- Contrôle et validation des opérations
-- Lecture des ventes et caisses
-- Génération de rapports de contrôle
+- Restaurants assignés : scanner et consommer les tickets
+- Permissions : `ticket:read,list,consume`, `controle_acces:check,validate,reject,list`
 
-### 8. **RECOUVREUR**
-- Gestion des recouvrements
-- Consultation des ventes
-- Génération de rapports de recouvrement
+### 8. **SUPERVISEUR**
+- Restaurants supervisés + planning de contrôle
+- Permissions : `ticket:read,list,consume`, `controle_acces:check,validate,reject,list`, `planning_controle:create,read,update,list,assign`, `restauration:read,list`
 
-### 9. **REPREUNEUR**
-- Gestion des reprises
-- Consultation des ventes
-- Génération de rapports de reprise
+### 9. **CHEF_DIV_RESTAURANT**
+- Tout ce qui touche la restauration et le contrôle
+- Permissions : `ticket:read,list,validate`, `controle_acces:read,check,validate,reject,list,assign`, `planning_controle:CRUD+assign`, `restauration:manage,read,update,list`
 
-### 10. **CHEF_RESTAURANT**
-- Gestion complète du restaurant
-- Consultation des ventes
-- Génération et export de rapports
+### 10. **ADMIN** (Administrateur)
+- Lecture globale, pas de modification ni suppression
+- Permissions : lecture sur toutes les ressources + `rapport:read,list,generate,export`
 
-### 11. **CHEF_CODIFICATION**
-- Gestion de la codification (CRUD complet)
-- Consultation des ventes
-- Génération et export de rapports
-
-### 12. **CHEF_SPORT**
-- Gestion du sport
-- Consultation des ventes
-- Génération et export de rapports
+### 11. **SUPERADMIN** (Super Administrateur)
+- Accès complet à toutes les ressources
+- Gestion complète des utilisateurs et sessions
 
 ## 🔐 Ressources et Actions
 
-### Ressources Better Auth (par défaut)
-- **user** : `create`, `list`, `set-role`, `ban`, `impersonate`, `delete`, `set-password`
+### Ressources système (Better Auth)
+- **user** : `create`, `list`, `set-role`, `update`, `ban`, `impersonate`, `delete`, `set-password`
 - **session** : `list`, `revoke`, `delete`
 
-### Ressources Métier Personnalisées
-- **vente** : `create`, `read`, `update`, `delete`, `list`, `validate`
+### Ressources métier
+- **ticket** : `create`, `read`, `update`, `delete`, `list`, `consume`, `validate`
+- **controle_acces** : `read`, `check`, `validate`, `reject`, `list`, `assign`
+- **planning_controle** : `create`, `read`, `update`, `delete`, `list`, `assign`
+- **restauration** : `manage`, `read`, `update`, `list`
 - **caisse** : `open`, `close`, `read`, `reconcile`, `list`
-- **restaurant** : `manage`, `read`, `update`, `list`
-- **codification** : `create`, `read`, `update`, `delete`, `list`
-- **sport** : `manage`, `read`, `update`, `list`
+- **comptabilite** : `read`, `export`, `reconcile`, `list`, `validate`
 - **recouvrement** : `create`, `read`, `update`, `list`, `validate`
-- **reprise** : `create`, `read`, `update`, `list`, `validate`
-- **controle** : `read`, `validate`, `reject`, `list`
+- **reprise** : `read`, `list`, `generate`, `export`
 - **rapport** : `generate`, `read`, `export`, `list`
+
+## 🏪 Assignation par restaurant
+
+Les rôles `controleur`, `superviseur`, et `repreneur` sont filtrés selon les restaurants assignés à l'utilisateur en base (table user↔restaurant).
 
 ## 📚 Utilisation
 
@@ -91,7 +82,7 @@ const hasPermission = await auth.api.userHasPermission({
   body: {
     userId: 'user-id',
     permissions: {
-      vente: ['create'],
+      ticket: ['create'],
     },
   },
 });
@@ -101,7 +92,7 @@ const hasPermission = await auth.api.userHasPermission({
   body: {
     role: 'vendeur',
     permissions: {
-      vente: ['create', 'update'],
+      ticket: ['create', 'update'],
     },
   },
 });
@@ -113,9 +104,9 @@ const hasPermission = await auth.api.userHasPermission({
 import { authClient } from '@/lib/auth-client';
 
 // Vérifier les permissions de l'utilisateur connecté
-const canCreateVente = await authClient.admin.hasPermission({
+const canCreateTicket = await authClient.admin.hasPermission({
   permissions: {
-    vente: ['create'],
+    ticket: ['create'],
   },
 });
 
@@ -134,15 +125,15 @@ const canDeleteUser = authClient.admin.checkRolePermission({
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
-import { USER_ROLE } from '@/auth/enums/user-role.enum';
+import { USER_ROLE } from '@/lib/access-control';
 
-@Controller('ventes')
+@Controller('tickets')
 @UseGuards(RolesGuard)
-export class VentesController {
+export class TicketsController {
   @Get()
   @Roles(USER_ROLE.VENDEUR, USER_ROLE.ACP, USER_ROLE.ADMIN)
   findAll() {
-    return 'Liste des ventes';
+    return 'Liste des tickets';
   }
 }
 ```
@@ -166,7 +157,7 @@ await auth.api.setRole({
 await auth.api.setRole({
   body: {
     userId: 'user-id',
-    role: 'vendeur,caissier',
+    role: 'vendeur,controleur',
   },
 });
 ```

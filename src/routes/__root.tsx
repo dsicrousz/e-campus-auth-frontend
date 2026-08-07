@@ -7,7 +7,6 @@ import {
   UserOutlined,
   LogoutOutlined,
   SafetyOutlined,
-  SettingOutlined,
   BellOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
@@ -42,22 +41,9 @@ function RootLayout() {
 
   const userMenuItems: MenuProps['items'] = [
     {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: 'Profil',
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: 'Paramètres',
-    },
-    {
-      type: 'divider',
-    },
-    {
       key: 'logout',
-      icon: <LogoutOutlined style={{ color: '#ef4444' }} />,
-      label: <span className="text-red-500">Déconnexion</span>,
+      icon: <LogoutOutlined style={{ color: '#dc2626' }} />,
+      label: <span className="text-red-600">Déconnexion</span>,
       onClick: signOut,
     },
   ]
@@ -68,46 +54,42 @@ function RootLayout() {
 
   return (
     <Layout className="min-h-screen">
-      {/* Header */}
-      <Header 
-        className="glass-strong px-6 flex items-center justify-between sticky top-0 z-50"
-        style={{ background: 'rgba(255,255,255,0.85)', borderBottom: '1px solid rgba(226,232,240,0.6)' }}
+      {/* Header — solid, professional */}
+      <Header
+        className="header-bar px-6 flex items-center justify-between sticky top-0 z-50"
+        style={{ height: 64, padding: 0 }}
       >
-        <Link to="/" className="flex items-center gap-3 no-underline group">
-          <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-            <SafetyOutlined className="text-white text-lg" />
-          </div>
-          <div className="hidden sm:flex flex-col">
-            <Text className="font-bold text-base leading-tight gradient-text">E-Campus</Text>
-            <Text className="text-[10px] text-slate-400 leading-tight font-medium tracking-wider uppercase">Auth System</Text>
-          </div>
+        <Link to="/" className="flex items-center gap-3 no-underline group focus-ring rounded-lg" aria-label="Accueil E-Campus">
+          <img src="/logo_noir2.png" alt="E-Campus" className="h-9 w-auto object-contain" />
         </Link>
-        
+
         <div className="flex items-center gap-2">
           <Badge count={0} showZero={false}>
-            <Button 
-              type="text" 
-              icon={<BellOutlined />} 
-              className="!text-slate-500 hover:!text-indigo-600 hover:!bg-indigo-50 !rounded-xl !w-10 !h-10" 
+            <Button
+              type="text"
+              icon={<BellOutlined />}
+              aria-label="Notifications"
+              className="!text-slate-500 hover:!text-blue-700 hover:!bg-blue-50 !rounded-lg !w-10 !h-10 focus-ring"
             />
           </Badge>
-          
+
           {user ? (
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={['click']}>
-              <Button 
-                type="text" 
-                className="flex items-center gap-3 hover:!bg-indigo-50 !rounded-xl !px-3 !h-11 !border !border-slate-100"
+              <Button
+                type="text"
+                className="flex items-center gap-3 hover:!bg-slate-50 !rounded-lg !px-3 !h-11 !border !border-slate-200 focus-ring"
+                aria-label="Menu utilisateur"
               >
-                <Avatar 
-                  size={32} 
-                  icon={<UserOutlined />} 
-                  className="gradient-bg !flex !items-center !justify-center"
-                  style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
+                <Avatar
+                  size={32}
+                  icon={<UserOutlined />}
+                  className="!flex !items-center !justify-center"
+                  style={{ background: '#1e40af' }}
                 />
                 <div className="hidden sm:flex flex-col items-start">
                   <Text className="!font-semibold !text-sm !text-slate-800 !leading-tight">{user.name || user.email}</Text>
                   {user.role && (
-                    <Text className="!text-[11px] !text-slate-400 !leading-tight !font-medium">
+                    <Text className="!text-[11px] !text-slate-500 !leading-tight !font-medium">
                       {Array.isArray(user.role) ? user.role.join(', ') : user.role}
                     </Text>
                   )}
@@ -116,11 +98,10 @@ function RootLayout() {
             </Dropdown>
           ) : (
             <Link to="/login">
-              <Button 
+              <Button
                 type="primary"
-                size="large" 
-                className="!rounded-xl gradient-bg !border-0 !font-semibold !shadow-md hover:!shadow-lg !transition-all"
-                style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
+                size="large"
+                className="!rounded-lg !font-semibold !h-10 focus-ring"
               >
                 Connexion
               </Button>
@@ -130,22 +111,23 @@ function RootLayout() {
       </Header>
 
       <Layout style={{ background: 'transparent' }}>
-        {/* Sidebar */}
+        {/* Sidebar — clean, no blur */}
         {user && (
-          <Sider 
-            width={250} 
-            style={{ 
-              background: 'rgba(255,255,255,0.6)', 
-              backdropFilter: 'blur(20px)',
-              position: 'sticky', 
-              top: 64, 
-              height: 'calc(100vh - 64px)', 
+          <Sider
+            width={248}
+            style={{
+              background: '#ffffff',
+              position: 'sticky',
+              top: 64,
+              height: 'calc(100vh - 64px)',
               overflowY: 'auto',
-              borderRight: '1px solid rgba(226,232,240,0.4)',
+              borderRight: '1px solid #e2e8f0',
             }}
           >
             <div className="px-5 pt-6 pb-3">
-              <Text className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Navigation</Text>
+              <Text className="text-[11px] font-bold text-slate-400 uppercase tracking-widest" style={{ fontFamily: 'Lexend, sans-serif' }}>
+                Navigation
+              </Text>
             </div>
             <Menu
               mode="inline"
@@ -154,24 +136,18 @@ function RootLayout() {
               onClick={handleMenuClick}
               style={{ background: 'transparent' }}
             />
-            
-            {/* Sidebar decoration */}
+
+            {/* Sidebar footer — institutional badge */}
             <div className="absolute bottom-6 left-5 right-5">
-              <div className="rounded-2xl gradient-bg-soft p-4">
+              <div className="rounded-xl border border-slate-200 p-4 bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-                    <SafetyOutlined className="text-white text-xs" />
-                  </div>
-                  <div>
-                    <Text className="!text-xs !font-bold !text-indigo-900 block">E-Campus Auth</Text>
-                    <Text className="!text-[10px] !text-indigo-500">v1.0.0</Text>
-                  </div>
+                  <img src="/logo_noir2.png" alt="E-Campus" className="h-7 w-auto object-contain" />
                 </div>
               </div>
             </div>
           </Sider>
         )}
-      
+
         {/* Main Content */}
         <Content className="p-4 sm:p-6 lg:p-8 min-h-screen">
           <div className="animate-fade-in">
@@ -179,7 +155,7 @@ function RootLayout() {
           </div>
         </Content>
       </Layout>
-      
+
       <TanStackRouterDevtools />
     </Layout>
   )

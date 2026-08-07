@@ -10,13 +10,33 @@ export const ac = createAccessControl(statement);
 /**
  * Définition des rôles avec leurs permissions
  * Basé sur Better Auth Admin Plugin
+ *
+ * Domaine : digitalisation du processus de ventes et consommation
+ * des tickets de restauration universitaire (CROUS).
+ *
+ * Hiérarchie :
+ *   superadmin          — accès complet à toutes les ressources
+ *   admin               — lecture globale, pas de modification/suppression
+ *
+ *   chef_div_restaurant — tout ce qui touche la restauration et le contrôle
+ *   superviseur         — restaurants supervisés + planning de contrôle
+ *   controleur          — restaurants assignés : scanner/consommer les tickets
+ *
+ *   vendeur             — page de vente des tickets
+ *   caissier_principal  — page de caisse
+ *   acp                 — page comptabilité (agent comptable principal)
+ *   recouvreur          — page de recouvrement
+ *   repreneur           — restaurants assignés : produire les factures
+ *
+ *   user                — compte générique, aucune permission métier
+ *
+ * Assignation par restaurant (gérée en base, table user↔restaurant) :
+ *   controleur, superviseur, repreneur sont filtrés selon les restaurants
+ *   qui leur sont assignés par l'administrateur.
  */
 
-// Rôle USER - Utilisateur standard (lecture seule)
-export const user = ac.newRole({
-  vente: ['read', 'list'],
-  rapport: ['read'],
-});
+// Rôle USER - Compte générique authentifié sans permission métier.
+export const user = ac.newRole({});
 
 // Rôle SUPERADMIN - Accès complet à toutes les ressources
 export const superadmin = ac.newRole({
@@ -25,100 +45,107 @@ export const superadmin = ac.newRole({
     'create',
     'list',
     'set-role',
+    'update',
     'ban',
     'impersonate',
     'delete',
     'set-password',
   ],
   session: ['list', 'revoke', 'delete'],
-  vente: ['create', 'read', 'update', 'delete', 'list', 'validate'],
+  ticket: ['create', 'read', 'update', 'delete', 'list', 'consume', 'validate'],
+  controle_acces: ['read', 'check', 'validate', 'reject', 'list', 'assign'],
+  planning_controle: [
+    'create',
+    'read',
+    'update',
+    'delete',
+    'list',
+    'assign',
+  ],
+  restauration: ['manage', 'read', 'update', 'list'],
   caisse: ['open', 'close', 'read', 'reconcile', 'list'],
-  restaurant: ['create', 'read', 'update', 'delete', 'list', 'manage'],
-  codification: ['create', 'read', 'update', 'delete', 'list'],
-  sport: ['create', 'read', 'update', 'delete', 'list', 'manage'],
+  comptabilite: ['read', 'export', 'reconcile', 'list', 'validate'],
   recouvrement: ['create', 'read', 'update', 'list', 'validate'],
-  reprise: ['create', 'read', 'update', 'list', 'validate'],
-  controle: ['read', 'validate', 'reject', 'list'],
+  reprise: ['read', 'list', 'generate', 'export'],
   rapport: ['generate', 'read', 'export', 'list'],
 });
 
-// Rôle ADMIN - Gestion des utilisateurs et accès étendu
+// Rôle ADMIN - Lecture globale, pas de modification ni suppression
 export const admin = ac.newRole({
-  ...adminAc.statements, // Permissions admin Better Auth
-  user: ['create', 'list', 'set-role', 'ban', 'delete'],
-  session: ['list', 'revoke'],
-  vente: ['read', 'list', 'validate'],
+  user: ['list'],
+  session: ['list'],
+  ticket: ['read', 'list'],
+  controle_acces: ['read', 'list'],
+  planning_controle: ['read', 'list'],
+  restauration: ['read', 'list'],
   caisse: ['read', 'list'],
-  restaurant: ['read', 'list'],
-  codification: ['read', 'list'],
-  sport: ['read', 'list'],
+  comptabilite: ['read', 'list'],
   recouvrement: ['read', 'list'],
   reprise: ['read', 'list'],
-  controle: ['read', 'list'],
-  rapport: ['generate', 'read', 'export', 'list'],
+  rapport: ['read', 'list', 'generate', 'export'],
 });
 
-// Rôle VENDEUR - Gestion des ventes
+// Rôle VENDEUR - Accès à sa page : vente de tickets
 export const vendeur = ac.newRole({
-  vente: ['create', 'read', 'update', 'list'],
+  ticket: ['create', 'read', 'update', 'list'],
   rapport: ['read'],
 });
 
-// Rôle CAISSIER - Gestion de la caisse
-export const caissier = ac.newRole({
-  caisse: ['open', 'close', 'read', 'reconcile', 'list'],
-  vente: ['read', 'list'],
-  rapport: ['read', 'generate'],
-});
-
-// Rôle ACP - Agent Commercial Principal
-export const acp = ac.newRole({
-  vente: ['create', 'read', 'update', 'list', 'validate'],
-  caisse: ['read', 'list'],
-  rapport: ['generate', 'read', 'export', 'list'],
-});
-
-// Rôle CONTROLEUR - Contrôle et validation
-export const controleur = ac.newRole({
-  controle: ['read', 'validate', 'reject', 'list'],
-  vente: ['read', 'list'],
-  caisse: ['read', 'list'],
-  rapport: ['generate', 'read', 'export', 'list'],
-});
-
-// Rôle RECOUVREUR - Gestion des recouvrements
+// Rôle RECOUVREUR - Accès à sa page : recouvrement
 export const recouvreur = ac.newRole({
   recouvrement: ['create', 'read', 'update', 'list', 'validate'],
-  vente: ['read', 'list'],
   rapport: ['read', 'generate'],
 });
 
-// Rôle REPREUNEUR - Gestion des reprises
-export const repreuneur = ac.newRole({
-  reprise: ['create', 'read', 'update', 'list', 'validate'],
-  vente: ['read', 'list'],
+// Rôle CAISSIER_PRINCIPAL - Accès à sa page : caisse
+export const caissier_principal = ac.newRole({
+  caisse: ['open', 'close', 'read', 'reconcile', 'list'],
+  ticket: ['read', 'list'],
   rapport: ['read', 'generate'],
 });
 
-// Rôle CHEF_RESTAURANT - Gestion du restaurant
-export const chef_restaurant = ac.newRole({
-  restaurant: ['create', 'read', 'update', 'delete', 'list', 'manage'],
-  vente: ['read', 'list'],
+// Rôle ACP - Agent Comptable Principal, accès à sa page : comptabilité
+export const acp = ac.newRole({
+  comptabilite: ['read', 'export', 'reconcile', 'list', 'validate'],
+  caisse: ['read', 'reconcile'],
+  ticket: ['read', 'list', 'validate'],
   rapport: ['generate', 'read', 'export', 'list'],
 });
 
-// Rôle CHEF_CODIFICATION - Gestion de la codification
-export const chef_codification = ac.newRole({
-  codification: ['create', 'read', 'update', 'delete', 'list'],
-  vente: ['read', 'list'],
+// Rôle CONTROLEUR - Restaurants assignés : scanner et consommer les tickets
+// (filtrage par restaurant assigné géré en base)
+export const controleur = ac.newRole({
+  ticket: ['read', 'list', 'consume'],
+  controle_acces: ['check', 'validate', 'reject', 'list'],
+  rapport: ['read'],
+});
+
+// Rôle SUPERVISEUR - Restaurants supervisés + planning de contrôle
+// (filtrage par restaurant supervisé géré en base)
+export const superviseur = ac.newRole({
+  ticket: ['read', 'list', 'consume'],
+  controle_acces: ['check', 'validate', 'reject', 'list'],
+  planning_controle: ['create', 'read', 'update', 'list', 'assign'],
+  restauration: ['read', 'list'],
+  rapport: ['read', 'generate'],
+});
+
+// Rôle CHEF_DIV_RESTAURANT - Tout ce qui touche la restauration et le contrôle
+export const chef_div_restaurant = ac.newRole({
+  ticket: ['read', 'list', 'validate'],
+  controle_acces: ['read', 'check', 'validate', 'reject', 'list', 'assign'],
+  planning_controle: ['create', 'read', 'update', 'delete', 'list', 'assign'],
+  restauration: ['manage', 'read', 'update', 'list'],
   rapport: ['generate', 'read', 'export', 'list'],
 });
 
-// Rôle CHEF_SPORT - Gestion du sport
-export const chef_sport = ac.newRole({
-  sport: ['create', 'read', 'update', 'delete', 'list', 'manage'],
-  vente: ['read', 'list'],
-  rapport: ['generate', 'read', 'export', 'list'],
+// Rôle REPRENEUR - Restaurants assignés : produire les factures
+// (filtrage par restaurant assigné géré en base)
+export const repreneur = ac.newRole({
+  reprise: ['read', 'list', 'generate', 'export'],
+  ticket: ['read', 'list'],
+  restauration: ['read', 'list'],
+  rapport: ['read', 'generate', 'export'],
 });
 
 /**
@@ -129,14 +156,13 @@ export const roles = {
   superadmin,
   admin,
   vendeur,
-  caissier,
+  recouvreur,
+  caissier_principal,
   acp,
   controleur,
-  recouvreur,
-  repreuneur,
-  chef_restaurant,
-  chef_codification,
-  chef_sport,
+  superviseur,
+  chef_div_restaurant,
+  repreneur,
 } as const;
 
 /**
@@ -148,17 +174,16 @@ export type RolePermissions<R extends RoleName> = typeof roles[R];
 /**
  * Énumération des noms de rôles pour utilisation dans les guards NestJS
  */
-export enum UserRole {
+export enum USER_ROLE {
   USER = 'user',
   SUPERADMIN = 'superadmin',
   ADMIN = 'admin',
   VENDEUR = 'vendeur',
-  CAISSIER = 'caissier',
+  RECOUVREUR = 'recouvreur',
+  CAISSIER_PRINCIPAL = 'caissier_principal',
   ACP = 'acp',
   CONTROLEUR = 'controleur',
-  RECOUVREUR = 'recouvreur',
-  REPREUNEUR = 'repreuneur',
-  CHEF_RESTAURANT = 'chef_restaurant',
-  CHEF_CODIFICATION = 'chef_codification',
-  CHEF_SPORT = 'chef_sport',
+  SUPERVISEUR = 'superviseur',
+  CHEF_DIV_RESTAURANT = 'chef_div_restaurant',
+  REPRENEUR = 'repreneur',
 }

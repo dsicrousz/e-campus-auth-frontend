@@ -11,16 +11,32 @@ const crudActions = ['create', 'read', 'update', 'delete', 'list'] as const;
  */
 export const statement = {
   ...defaultStatements, // user, session permissions par défaut
-  
-  // Ressources métier personnalisées
-  vente: [...crudActions, 'validate'],
+
+  // Tickets de restauration
+  ticket: [...crudActions, 'consume', 'validate'],
+
+  // Contrôle d'accès aux restaurants
+  controle_acces: ['read', 'check', 'validate', 'reject', 'list', 'assign'],
+
+  // Planning des contrôleurs
+  planning_controle: [...crudActions, 'assign'],
+
+  // Service de restauration (menus, plats, fréquentation)
+  restauration: ['manage', 'read', 'update', 'list'],
+
+  // Caisse physique
   caisse: ['open', 'close', 'read', 'reconcile', 'list'],
-  restaurant: [...crudActions, 'manage'],
-  codification: [...crudActions],
-  sport: [...crudActions, 'manage'],
+
+  // Comptabilité (réconciliation, exports financiers)
+  comptabilite: ['read', 'export', 'reconcile', 'list', 'validate'],
+
+  // Recouvrement des créances
   recouvrement: ['create', 'read', 'update', 'list', 'validate'],
-  reprise: ['create', 'read', 'update', 'list', 'validate'],
-  controle: ['read', 'validate', 'reject', 'list'],
+
+  // Reprise / facturation des restaurants assignés
+  reprise: ['read', 'list', 'generate', 'export'],
+
+  // Rapports transverses
   rapport: ['generate', 'read', 'export', 'list'],
 } as const;
 

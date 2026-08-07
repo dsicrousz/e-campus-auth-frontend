@@ -1,11 +1,11 @@
-import { type RoleName, UserRole } from './roles';
+import { type RoleName, USER_ROLE } from './roles';
 import { type Resource } from './statements';
 
 /**
  * Convertit un nom de rôle en valeur d'énumération
  */
-export function getRoleEnum(roleName: RoleName): UserRole {
-  return UserRole[roleName.toUpperCase() as keyof typeof UserRole];
+export function getRoleEnum(roleName: RoleName): USER_ROLE {
+  return USER_ROLE[roleName.toUpperCase() as keyof typeof USER_ROLE];
 }
 
 /**
@@ -27,42 +27,41 @@ export function isChefRole(role: RoleName): boolean {
  */
 export function getRoleResources(role: RoleName): Resource[] {
   const resourceMap: Record<RoleName, Resource[]> = {
-    user: ['vente', 'rapport'],
+    user: [],
     superadmin: [
       'user',
       'session',
-      'vente',
+      'ticket',
+      'controle_acces',
+      'planning_controle',
+      'restauration',
       'caisse',
-      'restaurant',
-      'codification',
-      'sport',
+      'comptabilite',
       'recouvrement',
       'reprise',
-      'controle',
       'rapport',
     ],
     admin: [
       'user',
       'session',
-      'vente',
+      'ticket',
+      'controle_acces',
+      'planning_controle',
+      'restauration',
       'caisse',
-      'restaurant',
-      'codification',
-      'sport',
+      'comptabilite',
       'recouvrement',
       'reprise',
-      'controle',
       'rapport',
     ],
-    vendeur: ['vente', 'rapport'],
-    caissier: ['caisse', 'vente', 'rapport'],
-    acp: ['vente', 'caisse', 'rapport'],
-    controleur: ['controle', 'vente', 'caisse', 'rapport'],
-    recouvreur: ['recouvrement', 'vente', 'rapport'],
-    repreuneur: ['reprise', 'vente', 'rapport'],
-    chef_restaurant: ['restaurant', 'vente', 'rapport'],
-    chef_codification: ['codification', 'vente', 'rapport'],
-    chef_sport: ['sport', 'vente', 'rapport'],
+    vendeur: ['ticket', 'rapport'],
+    recouvreur: ['recouvrement', 'rapport'],
+    caissier_principal: ['caisse', 'ticket', 'rapport'],
+    acp: ['comptabilite', 'caisse', 'ticket', 'rapport'],
+    controleur: ['ticket', 'controle_acces', 'rapport'],
+    superviseur: ['ticket', 'controle_acces', 'planning_controle', 'restauration', 'rapport'],
+    chef_div_restaurant: ['ticket', 'controle_acces', 'planning_controle', 'restauration', 'rapport'],
+    repreneur: ['reprise', 'ticket', 'restauration', 'rapport'],
   };
 
   return resourceMap[role] || [];
@@ -73,51 +72,47 @@ export function getRoleResources(role: RoleName): Resource[] {
  */
 export const permissionMatrix = {
   user: {
-    description: 'Utilisateur standard - Lecture seule',
+    description: 'Compte générique authentifié',
     level: 1,
   },
   vendeur: {
-    description: 'Gestion des ventes',
-    level: 2,
-  },
-  caissier: {
-    description: 'Gestion de la caisse',
+    description: 'Vente de tickets de restauration',
     level: 2,
   },
   recouvreur: {
-    description: 'Gestion des recouvrements',
+    description: 'Recouvrement des créances',
     level: 2,
   },
-  repreuneur: {
-    description: 'Gestion des reprises',
+  caissier_principal: {
+    description: 'Gestion de la caisse physique',
+    level: 2,
+  },
+  repreneur: {
+    description: 'Facturation des restaurants assignés',
     level: 2,
   },
   acp: {
-    description: 'Agent Commercial Principal',
+    description: 'Agent Comptable Principal — comptabilité',
     level: 3,
   },
   controleur: {
-    description: 'Contrôle et validation',
+    description: "Contrôle d'accès — scanner/consommer les tickets",
     level: 3,
   },
-  chef_restaurant: {
-    description: 'Chef du restaurant',
+  superviseur: {
+    description: 'Supervision restaurants + planning de contrôle',
     level: 3,
   },
-  chef_codification: {
-    description: 'Chef de la codification',
-    level: 3,
-  },
-  chef_sport: {
-    description: 'Chef du sport',
-    level: 3,
+  chef_div_restaurant: {
+    description: 'Restauration et contrôle (division)',
+    level: 4,
   },
   admin: {
-    description: 'Administrateur - Gestion des utilisateurs',
+    description: 'Lecture globale, pas de modification',
     level: 4,
   },
   superadmin: {
-    description: 'Super Administrateur - Accès complet',
+    description: 'Accès complet à toutes les ressources',
     level: 5,
   },
 } as const;

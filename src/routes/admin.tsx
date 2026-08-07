@@ -30,7 +30,7 @@ import {
 } from '@ant-design/icons'
 import { adminService, type User, type CreateUserData, type UpdateUserData } from '@/lib/admin-service'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
-import { UserRole, permissionMatrix, type RoleName } from '@/lib/access-control'
+import { USER_ROLE, permissionMatrix, type RoleName } from '@/lib/access-control'
 import { RolePermissionsTooltip } from '@/components/RolePermissionsTooltip'
 
 const { Title, Text } = Typography
@@ -203,10 +203,10 @@ function AdminDashboard() {
           4: 'orange',
           5: 'red',
         }
-        
+
         // Le rôle est toujours un tableau
         const roles = role || ['user']
-        
+
         return (
           <Space size={[0, 4]} wrap>
             {roles.map((r) => {
@@ -282,10 +282,10 @@ function AdminDashboard() {
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <Title level={2} className="!mb-1 gradient-text !font-bold">
+            <Title level={2} className="!mb-1 gradient-text !font-bold" style={{ fontFamily: 'Lexend, sans-serif' }}>
               Gestion des utilisateurs
             </Title>
-            <Text className="text-slate-500">
+            <Text className="text-slate-600">
               Gérez les utilisateurs, leurs rôles et leurs permissions
             </Text>
           </div>
@@ -294,27 +294,26 @@ function AdminDashboard() {
             icon={<PlusOutlined />}
             onClick={() => showModal()}
             size="large"
-            className="!rounded-xl !font-semibold !border-0 !shadow-md !h-11"
-            style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
+            className="!rounded-lg !font-semibold !shadow-sm !h-11 focus-ring"
           >
             Ajouter un utilisateur
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards — institutional palette */}
       <Row gutter={[16, 16]}>
         {[
-          { title: 'Total Utilisateurs', value: stats?.totalUsers || 0, icon: <TeamOutlined />, color: '#4f46e5', bg: '#eef2ff' },
-          { title: 'Utilisateurs Actifs', value: stats?.activeUsers || 0, icon: <UserOutlined />, color: '#059669', bg: '#ecfdf5' },
-          { title: 'Administrateurs', value: stats?.adminUsers || 0, icon: <LockOutlined />, color: '#7c3aed', bg: '#ede9fe' },
+          { title: 'Total Utilisateurs', value: stats?.totalUsers || 0, icon: <TeamOutlined />, color: '#1e40af', bg: '#eff6ff' },
+          { title: 'Utilisateurs Actifs', value: stats?.activeUsers || 0, icon: <UserOutlined />, color: '#16a34a', bg: '#f0fdf4' },
+          { title: 'Administrateurs', value: stats?.adminUsers || 0, icon: <LockOutlined />, color: '#7c3aed', bg: '#f5f3ff' },
           { title: 'Utilisateurs Bannis', value: stats?.bannedUsers || 0, icon: <BlockOutlined />, color: '#dc2626', bg: '#fef2f2' },
         ].map((stat, index) => (
           <Col xs={24} sm={12} lg={6} key={index}>
-            <div className="bg-white rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition-all duration-300 hover:border-slate-200">
+            <div className="surface-card-hover p-6">
               <div className="flex items-center gap-4">
-                <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-lg"
+                <div
+                  className="w-12 h-12 rounded-lg flex items-center justify-center text-lg"
                   style={{ backgroundColor: stat.bg, color: stat.color }}
                 >
                   {stat.icon}
@@ -322,7 +321,7 @@ function AdminDashboard() {
                 <Statistic
                   title={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wide">{stat.title}</span>}
                   value={stat.value}
-                  valueStyle={{ color: stat.color, fontWeight: 700, fontSize: '24px' }}
+                  valueStyle={{ color: stat.color, fontWeight: 700, fontSize: '24px', fontFamily: 'Lexend, sans-serif' }}
                   loading={statsLoading}
                 />
               </div>
@@ -332,11 +331,13 @@ function AdminDashboard() {
       </Row>
 
       {/* Users Table */}
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+      <div className="surface-card overflow-hidden">
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <Text className="!font-bold !text-lg !text-slate-800">Liste des utilisateurs</Text>
-            <Text className="block text-slate-400 text-sm mt-0.5">
+            <Text className="!font-bold !text-lg !text-slate-800" style={{ fontFamily: 'Lexend, sans-serif' }}>
+              Liste des utilisateurs
+            </Text>
+            <Text className="block text-slate-500 text-sm mt-0.5">
               {pagination.total} utilisateur{pagination.total > 1 ? 's' : ''} au total
             </Text>
           </div>
@@ -364,12 +365,14 @@ function AdminDashboard() {
       <Modal
         title={
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center primary-bg">
               {editingUser ? <EditOutlined className="text-white" /> : <PlusOutlined className="text-white" />}
             </div>
             <div>
-              <div className="font-bold text-slate-800">{editingUser ? "Modifier l'utilisateur" : "Nouvel utilisateur"}</div>
-              <div className="text-xs text-slate-400 font-normal">{editingUser ? 'Mettre à jour les informations' : 'Remplissez les informations ci-dessous'}</div>
+              <div className="font-bold text-slate-800" style={{ fontFamily: 'Lexend, sans-serif' }}>
+                {editingUser ? "Modifier l'utilisateur" : "Nouvel utilisateur"}
+              </div>
+              <div className="text-xs text-slate-500 font-normal">{editingUser ? 'Mettre à jour les informations' : 'Remplissez les informations ci-dessous'}</div>
             </div>
           </div>
         }
@@ -392,7 +395,7 @@ function AdminDashboard() {
               { type: 'email', message: 'Email invalide' },
             ]}
           >
-            <Input placeholder="email@example.com" className="!rounded-xl !h-11" />
+            <Input placeholder="email@example.com" className="!rounded-lg !h-11" />
           </Form.Item>
 
           <Form.Item
@@ -400,7 +403,7 @@ function AdminDashboard() {
             label={<span className="font-semibold text-slate-700">Nom</span>}
             rules={[{ required: true, message: 'Le nom est requis' }]}
           >
-            <Input placeholder="Nom complet" className="!rounded-xl !h-11" />
+            <Input placeholder="Nom complet" className="!rounded-lg !h-11" />
           </Form.Item>
 
           {!editingUser && (
@@ -412,7 +415,7 @@ function AdminDashboard() {
                 { min: 6, message: 'Minimum 6 caractères' },
               ]}
             >
-              <Input.Password placeholder="Mot de passe" className="!rounded-xl !h-11" />
+              <Input.Password placeholder="Mot de passe" className="!rounded-lg !h-11" />
             </Form.Item>
           )}
 
@@ -422,82 +425,76 @@ function AdminDashboard() {
             rules={[{ required: true, message: 'Au moins un rôle est requis' }]}
             tooltip="Vous pouvez sélectionner plusieurs rôles pour cet utilisateur"
           >
-            <Select 
+            <Select
               mode="multiple"
               placeholder="Sélectionner un ou plusieurs rôles"
               showSearch
               optionFilterProp="children"
               maxTagCount="responsive"
               allowClear
-              className="!rounded-xl"
+              className="!rounded-lg"
             >
-              <Option value={UserRole.USER}>
+              <Option value={USER_ROLE.USER}>
                 <div className="flex items-center justify-between">
                   <span>Utilisateur</span>
                   <Tag color="default" className="ml-2">Niveau 1</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.VENDEUR}>
+              <Option value={USER_ROLE.VENDEUR}>
                 <div className="flex items-center justify-between">
                   <span>Vendeur</span>
                   <Tag color="blue" className="ml-2">Niveau 2</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.CAISSIER}>
-                <div className="flex items-center justify-between">
-                  <span>Caissier</span>
-                  <Tag color="blue" className="ml-2">Niveau 2</Tag>
-                </div>
-              </Option>
-              <Option value={UserRole.RECOUVREUR}>
+              <Option value={USER_ROLE.RECOUVREUR}>
                 <div className="flex items-center justify-between">
                   <span>Recouvreur</span>
                   <Tag color="blue" className="ml-2">Niveau 2</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.REPREUNEUR}>
+              <Option value={USER_ROLE.CAISSIER_PRINCIPAL}>
                 <div className="flex items-center justify-between">
-                  <span>Repreuneur</span>
+                  <span>Caissier Principal</span>
                   <Tag color="blue" className="ml-2">Niveau 2</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.ACP}>
+              <Option value={USER_ROLE.REPRENEUR}>
                 <div className="flex items-center justify-between">
-                  <span>Agent Commercial Principal</span>
+                  <span>Repreneur</span>
+                  <Tag color="blue" className="ml-2">Niveau 2</Tag>
+                </div>
+              </Option>
+              <Option value={USER_ROLE.ACP}>
+                <div className="flex items-center justify-between">
+                  <span>Agent Comptable Principal</span>
                   <Tag color="purple" className="ml-2">Niveau 3</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.CONTROLEUR}>
+              <Option value={USER_ROLE.CONTROLEUR}>
                 <div className="flex items-center justify-between">
                   <span>Contrôleur</span>
                   <Tag color="purple" className="ml-2">Niveau 3</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.CHEF_RESTAURANT}>
+              <Option value={USER_ROLE.SUPERVISEUR}>
                 <div className="flex items-center justify-between">
-                  <span>Chef Restaurant</span>
+                  <span>Superviseur</span>
                   <Tag color="purple" className="ml-2">Niveau 3</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.CHEF_CODIFICATION}>
+              <Option value={USER_ROLE.CHEF_DIV_RESTAURANT}>
                 <div className="flex items-center justify-between">
-                  <span>Chef Codification</span>
-                  <Tag color="purple" className="ml-2">Niveau 3</Tag>
+                  <span>Chef Division Restaurant</span>
+                  <Tag color="orange" className="ml-2">Niveau 4</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.CHEF_SPORT}>
-                <div className="flex items-center justify-between">
-                  <span>Chef Sport</span>
-                  <Tag color="purple" className="ml-2">Niveau 3</Tag>
-                </div>
-              </Option>
-              <Option value={UserRole.ADMIN}>
+              <Option value={USER_ROLE.ADMIN}>
                 <div className="flex items-center justify-between">
                   <span>Administrateur</span>
                   <Tag color="orange" className="ml-2">Niveau 4</Tag>
                 </div>
               </Option>
-              <Option value={UserRole.SUPERADMIN}>
+              <Option value={USER_ROLE.SUPERADMIN}>
                 <div className="flex items-center justify-between">
                   <span>Super Administrateur</span>
                   <Tag color="red" className="ml-2">Niveau 5</Tag>
@@ -507,15 +504,14 @@ function AdminDashboard() {
           </Form.Item>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button onClick={() => setIsModalOpen(false)} className="!rounded-xl !h-10 !px-6">
+            <Button onClick={() => setIsModalOpen(false)} className="!rounded-lg !h-10 !px-6">
               Annuler
             </Button>
             <Button
               type="primary"
               htmlType="submit"
               loading={createUserMutation.isPending || updateUserMutation.isPending}
-              className="!rounded-xl !h-10 !px-6 !font-semibold !border-0"
-              style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
+              className="!rounded-lg !h-10 !px-6 !font-semibold focus-ring"
             >
               {editingUser ? 'Mettre à jour' : 'Créer'}
             </Button>
